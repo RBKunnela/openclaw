@@ -39,8 +39,26 @@ describe("resolveNodeCommandAllowlist", () => {
       },
       { platform: "ios", deviceFamily: "iPhone" },
     );
+
     expect(allow.has("camera.snap")).toBe(true);
     expect(allow.has("screen.record")).toBe(true);
     expect(allow.has("camera.clip")).toBe(false);
+  });
+
+  it("applies denyCommands as exact removals", () => {
+    const allow = resolveNodeCommandAllowlist(
+      {
+        gateway: {
+          nodes: {
+            denyCommands: ["camera.list", "contacts.search"],
+          },
+        },
+      },
+      { platform: "ios", deviceFamily: "iPhone" },
+    );
+
+    expect(allow.has("camera.list")).toBe(false);
+    expect(allow.has("contacts.search")).toBe(false);
+    expect(allow.has("calendar.events")).toBe(true);
   });
 });
