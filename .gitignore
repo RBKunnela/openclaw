@@ -69,6 +69,11 @@ apps/ios/*.dSYM.zip
 # provisioning profiles (local)
 apps/ios/*.mobileprovision
 
+# AIOS core and Claude Code config (local only)
+.aios-core/
+.claude/
+nul
+
 # Local untracked files
 .local/
 docs/.local/
