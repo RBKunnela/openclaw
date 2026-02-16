@@ -332,6 +332,16 @@ Minimal `~/.openclaw/openclaw.json` (model + defaults):
 
 Details: [Security guide](https://docs.openclaw.ai/gateway/security) · [Docker + sandboxing](https://docs.openclaw.ai/install/docker) · [Sandbox config](https://docs.openclaw.ai/gateway/configuration)
 
+### Upstream sync protection (fork-specific)
+
+This fork removed 9 high-risk extensions (nostr, matrix, memory-lancedb, diagnostics-otel, msteams, twitch, tlon, voice-call, phone-control). A 3-layer defense prevents them from re-entering when syncing with upstream:
+
+1. **`.gitattributes` merge=ours** — git merges that touch banned extension paths keep our (deleted) version.
+2. **Pre-commit hook** — blocks any commit that stages files under a banned extension directory.
+3. **Sync script** — `scripts/sync-upstream.sh` cherry-picks upstream commits and auto-scrubs banned files.
+
+Run `scripts/security-guard.sh` at any time to audit for banned directories, risky native packages, and suspicious patterns.
+
 ### [WhatsApp](https://docs.openclaw.ai/channels/whatsapp)
 
 - Link the device: `pnpm openclaw channels login` (stores creds in `~/.openclaw/credentials`).
