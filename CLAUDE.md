@@ -17,12 +17,14 @@ pnpm build                  # Full build: bundle A2UI, tsdown, generate types
 ```
 
 **Development:**
+
 ```bash
 pnpm openclaw ...           # Run CLI directly (tsx)
 pnpm gateway:watch          # Auto-reload gateway on file changes
 ```
 
 **Type-checking & Linting:**
+
 ```bash
 pnpm check                  # format:check + tsgo + lint (run before commits)
 pnpm tsgo                   # TypeScript type-check only
@@ -33,6 +35,7 @@ pnpm lint:fix               # oxlint --fix + format
 ```
 
 **Testing:**
+
 ```bash
 pnpm test                   # Unit tests (vitest, parallelized)
 pnpm test:fast              # Unit tests without parallelization script

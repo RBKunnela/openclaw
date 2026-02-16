@@ -7,6 +7,8 @@
     "sortScripts": true,
   },
   "ignorePatterns": [
+    ".aios-core/",
+    ".claude/",
     "apps/",
     "assets/",
     "dist/",
