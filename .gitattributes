@@ -1,1 +1,13 @@
 * text=auto eol=lf
+
+# Upstream sync protection: keep banned extensions deleted on merge.
+# Requires: git config merge.ours.driver true (set up via `pnpm prepare`)
+extensions/nostr/**              merge=ours
+extensions/matrix/**             merge=ours
+extensions/memory-lancedb/**     merge=ours
+extensions/diagnostics-otel/**   merge=ours
+extensions/msteams/**            merge=ours
+extensions/twitch/**             merge=ours
+extensions/tlon/**               merge=ours
+extensions/voice-call/**         merge=ours
+extensions/phone-control/**      merge=ours

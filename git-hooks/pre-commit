@@ -3,6 +3,48 @@
 set -euo pipefail
 
 ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+
+# ── Blocked extensions guard ────────────────────────────────────────────────
+# These extensions were removed for security/stability reasons and must never
+# re-enter the codebase. Block commits that stage files in banned paths.
+BANNED_EXTENSIONS=(
+  extensions/nostr
+  extensions/matrix
+  extensions/memory-lancedb
+  extensions/diagnostics-otel
+  extensions/msteams
+  extensions/twitch
+  extensions/tlon
+  extensions/voice-call
+  extensions/phone-control
+)
+
+mapfile -d '' -t all_staged < <(git diff --cached --name-only --diff-filter=ACMR -z)
+blocked=()
+for f in "${all_staged[@]}"; do
+  for ban in "${BANNED_EXTENSIONS[@]}"; do
+    if [[ "$f" == "$ban"/* ]]; then
+      blocked+=("$f")
+      break
+    fi
+  done
+done
+
+if [ "${#blocked[@]}" -gt 0 ]; then
+  echo "──────────────────────────────────────────────────────────" >&2
+  echo "BLOCKED: Commit contains files from banned extensions." >&2
+  echo "" >&2
+  for b in "${blocked[@]}"; do
+    echo "  • $b" >&2
+  done
+  echo "" >&2
+  echo "These extensions were removed for security reasons." >&2
+  echo "Unstage them:  git reset HEAD -- <path>" >&2
+  echo "──────────────────────────────────────────────────────────" >&2
+  exit 1
+fi
+# ── End blocked extensions guard ────────────────────────────────────────────
+
 RUN_NODE_TOOL="$ROOT_DIR/scripts/pre-commit/run-node-tool.sh"
 FILTER_FILES="$ROOT_DIR/scripts/pre-commit/filter-staged-files.mjs"
 
