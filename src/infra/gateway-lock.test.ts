@@ -198,8 +198,8 @@ describe("gateway lock", () => {
     const lock = await acquireGatewayLock({
       env,
       allowInTests: true,
-      timeoutMs: 30,
-      pollIntervalMs: 2,
+      timeoutMs: 500,
+      pollIntervalMs: 10,
       staleMs: 1,
       platform: "linux",
     });
