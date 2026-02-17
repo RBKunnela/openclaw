@@ -51,22 +51,24 @@ describe("runCommandWithTimeout", () => {
   });
 
   it("resets no output timer when command keeps emitting output", async () => {
+    // Use generous intervals to avoid Windows timer-resolution flakiness
+    // (default Windows timer resolution is ~15.6ms, so 10ms setInterval is unreliable).
     const result = await runCommandWithTimeout(
       [
         process.execPath,
         "-e",
-        'let i=0; const t=setInterval(() => { process.stdout.write("."); i += 1; if (i >= 2) { clearInterval(t); process.exit(0); } }, 10);',
+        'let i=0; const t=setInterval(() => { process.stdout.write("."); i += 1; if (i >= 3) { clearInterval(t); process.exit(0); } }, 50);',
       ],
       {
         timeoutMs: 5_000,
-        noOutputTimeoutMs: 160,
+        noOutputTimeoutMs: 500,
       },
     );
 
     expect(result.code).toBe(0);
     expect(result.termination).toBe("exit");
     expect(result.noOutputTimedOut).toBe(false);
-    expect(result.stdout.length).toBeGreaterThanOrEqual(2);
+    expect(result.stdout.length).toBeGreaterThanOrEqual(3);
   });
 
   it("reports global timeout termination when overall timeout elapses", async () => {
